@@ -48,7 +48,7 @@ export function configurePassport() {
                     console.log('Usuario no existente en el login')
                     return done(null, false);
                 }
-                if (!isValidPassword(user.password, password)) {
+                if (!isValidPassword(password, user.password)) {
                     console.log('Contraseña incorrecta');
                     return done(null, false);
                 }

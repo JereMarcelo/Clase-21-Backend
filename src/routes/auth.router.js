@@ -11,7 +11,7 @@ route.post('/login',
 passport.authenticate('login', { failureRedirect: '/api/auth/failurelogin' }),
     async (req, res) => {
         req.session.user = req.user.email;
-        res.send({ status: 'Login ok' });
+        res.redirect("/products");
     });
 
 route.post('/logout', authenticated, (req, res) => {
