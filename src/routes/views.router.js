@@ -79,7 +79,7 @@ router.get("/login", (req, res) => {
 });
 
 router.get('/perfil', authenticated, async (req, res) => {
-    const email = req.user;
+    const user = req.session.user = req.user;
 
 
     res.render('perfil', {
