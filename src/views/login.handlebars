@@ -1,0 +1,31 @@
+<div class='hero-image'>
+    <div class='hero-text'>
+        <h1>
+            Ingresar
+        </h1>
+    <form onsubmit='login(event)'>
+        <input
+        id='form-email'
+        type='text'
+        name='form-email'
+        placeholder='email'
+    />
+        <input
+        id='form-password'
+        type='password'
+        name='form-password'
+        placeholder='password'
+    />
+        <input type='submit' value='Login' />
+        </form>
+        {{!--<a href="/forgot-password">Olvide mi contraseña</a>--}}
+
+        <a href="api/auth/github">
+            <button>
+                Continuar con Github
+            </button>
+        </a>
+        
+    </div>
+</div>
+<script src='js/login.js'></script>
