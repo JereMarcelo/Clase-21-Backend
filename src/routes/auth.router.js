@@ -24,8 +24,7 @@ route.post('/logout', authenticated, (req, res) => {
     });
 });
 
-route.post(
-    '/register',
+route.post('/register',
     passport.authenticate('register', {
         failureRedirect: '/api/auth/failureregister',
     }),

@@ -1,9 +1,12 @@
 import { Router } from 'express';
 import { userModel } from '../models/user.model.js';
+import {findOne, findAll, create, update, remove}from '../controllers/user.controller.js';
+
+
 const route = Router();
 
 
-route.get('/', async (req, res, next) => {
+route.get('/', findAll)/*async (req, res, next) => {
     const { skip, limit, ...query } = req.query;
     try {
     const usuarios = await userModel.paginate(query, {
@@ -20,8 +23,8 @@ route.get('/', async (req, res, next) => {
     } catch (error) {
     next(error);
     }
-});
-route.get('/:idUsuario', async (req, res, next) => {
+});*/
+route.get('/:idUsuario', findOne)/*async (req, res, next) => {
     try {
     const idUsuario = req.params.idUsuario;
     const usuario = await userModel.findOne({ _id: idUsuario });
@@ -35,9 +38,9 @@ route.get('/:idUsuario', async (req, res, next) => {
     } catch (error) {
     next(error);
     }
-});
+});*/
 
-route.post('/', async (req, res, next) => {
+route.post('/', create)/*async (req, res, next) => {
     const email = req.session.user;
     if (email) {
     return res.redirect('/perfil');
@@ -50,11 +53,11 @@ route.post('/', async (req, res, next) => {
     } catch (error) {
     next(error);
     }
-});
-route.put('/:idUsuario', async (req, res, next) => {
+});*/
+route.put('/:idUsuario', update)/*async (req, res, next) => {
     const idUsuario = req.params.idUsuario;
     try {
-    const usuario = await userModel.find({ _id: idUsuario });
+    const usuario = await userModel.findById({ _id: idUsuario });
     if (!usuario) {
         res
         .status(404)
@@ -71,9 +74,9 @@ route.put('/:idUsuario', async (req, res, next) => {
     } catch (error) {
     next(error);
     }
-});
+});*/
 
-route.delete('/:idUsuario', async (req, res, next) => {
+route.delete('/:idUsuario', remove)/*async (req, res, next) => {
     try {
         const idUsuario = req.params.idUsuario;
         await userModel.deleteOne({ _id: idUsuario });
@@ -81,5 +84,7 @@ route.delete('/:idUsuario', async (req, res, next) => {
     } catch (error) {
         next(error);
     }
-    });
+    });*/
     export default route;
+
+    //54:06

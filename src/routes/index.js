@@ -4,6 +4,7 @@ import authRouter from './auth.router.js';
 import { Router } from 'express';
 import jwtrouter from './jwt.router.js';
 
+
 const route = Router();
 route.use('/usuarios', usuariosRouter);
 route.use('/session', sessionRouter);
