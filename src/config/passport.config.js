@@ -1,9 +1,9 @@
 import passport from 'passport';
 import local from 'passport-local';
-import { userModel } from '../models/user.model.js'
-import { createHash, isValidPassword } from '../utils/crypto.js'
+import { userModel } from '../dao/models/user.model.js';
+import { createHash, isValidPassword } from '../utils/crypto.js';
 import github from 'passport-github2';
-import { config } from "../config.js"
+//import { config } from "../../config.js";
 
 const LocalStrategy = local.Strategy;
 const GithubStrategy = github.Strategy;
@@ -18,7 +18,7 @@ export function configurePassport() {
             },
             async (req, username, password, done) => {
                 try {
-                    const { edad, email, apellido, nombre } = req.body;
+                    const { edad, apellido, nombre } = req.body;
                     const userExists = await userModel.findOne({ email: username })
                     if (userExists) {
                         return done(null, false);

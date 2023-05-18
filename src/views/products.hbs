@@ -1,0 +1,42 @@
+<h1> Bienvenido al mundo de la programacion <strong>{{user.nombre}}</strong> </h1>
+<h2>Rol: <strong>{{user.role}}</strong></h2>
+
+{{#each result.docs}}
+
+<div class="card-group w-75 ">
+
+	<div class="card m-5">
+		<div class="card-body">
+			<h5 class="card-title">{{title}}</h5>
+
+		</div>
+		<ul class="list-group list-group-flush">
+
+			<li class="list-group-item">PRECIO: {{price}}</li>
+			<li class="list-group-item">STOCK: {{stock}}</li>
+
+		</ul>
+		<div class="card-body">
+			<div class="d-flex justify-content-between">
+				<form action="/products/{{this.id}}" method="GET">
+				<button class="btn btn-primary" type="submit">Ver producto</button>
+			</form>
+			<form action="" method="">
+				<button class="btn btn-dark" type="submit">Agregar al carrito</button>
+			</form>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+{{/each}}
+
+
+<div>
+	<a class="alert-link" href="/products?page={{result.prevPage}}&&limit={{result.limit}}">Prev</a>
+	<a class="alert-link" href="/products?page={{result.nextPage}}&&limit={{result.limit}}">Next</a>
+</div>
+<h5 class="">
+	{{ result.page }} / {{ result.totalPages }}
+</h5>

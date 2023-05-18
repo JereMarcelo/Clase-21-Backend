@@ -1,22 +1,27 @@
-import express from 'express';
-import handlebars from 'express-handlebars';
-import { Server } from 'socket.io';
-import { __dirname } from './__dirname.js'
-import cartsRouter from "./src/routes/carts.router.js";
-import productsRouter from './src/routes/products.router.js';
-import viewsRouter from './src/routes/views.router.js';
-import './src/persist/dbConfig.js';
+import express from 'express'
 import cookieParser from 'cookie-parser';
-import session from 'express-session'
+import session from 'express-session';
 import MongoStore from 'connect-mongo';
+import productRoutes from './src/routes/products.routes.js'
+import viewsRoutes from './src/routes/views.router.js'
+import chatRoutes from './src/routes/chat.routes.js'
+import handlebars from 'express-handlebars'
+import cartRoutes from './src/routes/carts.routes.js'
+import mongoose from 'mongoose'
+import __dirname from './dirname.js'
+import chatDao from './src/dao/chatDao.js'
+import Handlebars from 'handlebars'
+import path from 'path'
+import { Server } from 'socket.io'
+import { allowInsecurePrototypeAccess } from '@handlebars/allow-prototype-access'
 import routes from './src/routes/index.js';
+import { configurePassport } from './src/config/passport.config.js';
 import passport from 'passport';
-import { configurePassport } from "./src/config/passport.config.js"
 
+const app = express()
 
-
-const app = express();
-const PORT = 8080
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 
 app.use(cookieParser());
 app.use(
@@ -24,68 +29,61 @@ app.use(
         store: MongoStore.create({
             mongoUrl: 'mongodb+srv://JereMarcelo:Jeremias98@cluster0.fbfpvfe.mongodb.net/?retryWrites=true&w=majority',
             mongoOptions: {
-                useNewUrlParser: true,
-                useUnifiedTopology: true,
-            },
-            ttl: 15,
-        }),
-        secret: "secret",
-        resave: true,
-        saveUninitialized: true,
-    })
-)
-configurePassport();
-app.use(passport.initialize());
-app.use(passport.session());
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        },
+        ttl: 15,
+    }),
+    secret: "123456",
+    resave: true,
+    saveUninitialized: true,
+})
+);
+configurePassport()
+app.use(passport.initialize())
+app.use(passport.session())
 
-/*app.get('/login', (req, res) =>{
-    const { username, password } = req.query
-    if (username !== 'Jere' || password !== 'Jere123') {
-        return res.send('Login field')
+// WEBSOCKET
+const httpServer = app.listen(8080, () => console.log("Listening on port 8080"))
+const io = new Server(httpServer)
+
+// HANDELBARS
+app.engine('hbs', handlebars.engine({
+    extname: 'hbs',
+    defaultLayout: 'main',
+    handlebars: allowInsecurePrototypeAccess(Handlebars)
+}))
+app.set('views', __dirname + '/src/views')
+app.set('view engine', 'hbs')
+app.use(express.static(path.join(__dirname, '/src/public')));
+
+// ROUTES
+app.use('/', viewsRoutes)
+app.use('/chat', chatRoutes)
+app.use('/api/products', productRoutes)
+app.use('/api/carts', cartRoutes)
+app.use('/api', routes);
+
+
+
+// BASE DE DATOS
+mongoose.set('strictQuery', false)
+mongoose.connect('mongodb+srv://JereMarcelo:Jeremias98@cluster0.fbfpvfe.mongodb.net/?retryWrites=true&w=majority', (error) => {
+    if (error) {
+        console.log('Cannot connect to database' + error)
+    process.exit()
     }
-    req.session.user = username
-    req.session.admin = true
-    res.send( login = 'Listo' )
-})*/
+})
 
-/*app.get('/autorizado', (req, res) => {
-    const admin = req.session.admin;
-    if(admin) {
-        req.send({ autorizado: 'OK' });
-    } else {
-        res.status(401).send({ error: 'No esta autorizado '})
-    }
-});*/
-
-
-app.use(express.static(__dirname + '/src/public'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-
-app.engine('handlebars', handlebars.engine());
-app.set('view engine', 'handlebars');
-app.set('views', __dirname + '/src/views');
-
-app.use('/api/carts', cartsRouter);
-app.use('/api/products', productsRouter);
-app.use('/', viewsRouter);
-app.use('/api', routes)
-
-
-const httpServer = app.listen(8080, () => {
-    console.log(`Servidor en el puerto ${8080}.`)
-});
-
-const socketServer = new Server(httpServer);
-
-socketServer.on('connection', (socket) => {
-    console.log(`Usuario conectado con el ID ${socket.id}.`);
-    socket.emit('fetchProducts');
-    socket.on('updateProducts', () => {
-        socket.emit('fetchProducts')
-    });
-    socket.on('disconnect', () => {
-        console.log(`Usuario con ID ${socket.id} se ha desconectado.`)
+//SOCKET IO
+io.on('connection', async (socket) => {
+    socket.emit("historialChat", await chatDao.getMessages())
+    socket.on("mensajeNuevo", async (data) => {
+    let message = {
+        user: data.user,
+        message: data.message
+        }
+    await chatDao.registerMessage(message)
+        io.emit("historialChat", await chatDao.getMessages())
     })
 })

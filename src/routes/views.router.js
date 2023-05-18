@@ -1,98 +1,121 @@
 import { Router } from 'express';
-import CartManager from '../persist/daos/mongoManag/CartsManager.js';
-import ProductManager from '../persist/daos/mongoManag/ProductsManager.js';
-import route from './usuarios.router.js';
-import { authenticated } from "../utils/auth.js"
-
+import productDao from '../dao/productDao.js';
+import { authenticated } from '../utils/auth.js';
 const router = Router();
 
-const productManager = new ProductManager();
 
+router.get('/', async (req, res) => {
+    let limit = parseInt(req.query.limit);
+    let query = req.query.query || null
+    let sort = parseInt(req.query.sort)
+    let page = parseInt(req.query.page)
+    
 
-router.get('/', async (request, response) => {
-    const results = await productManager.getProducts(request.query);
-    const products = (results.payload).map(product => {
-        return {
-            id: product._id,
-            title: product.title,
-            description: product.description,
-            price: product.price,
-            thumbnail: product.thumbnail,
-            code: product.code,
-            stock: product.stock,
-            category: product.category,
-            status: product.status
+    try {
+            let result = await productDao.getProducts(limit, JSON.parse(query), sort, page)
+            res.render('products', { result, user })
+            } catch (error) {
+            res.json({ message: 'Error, check data' })
         }
-    });
-    response.render('home', { products })
-});
+    })
 
-router.get('/realTimeProducts', (request, response) => {
-    response.render('realTimeProducts')
-});
 
-router.get('/products', async (request, response) => {
-    const results = await productManager.getProducts(request.query);
-    if (results.prevLink) {
-        results.prevLink = (results.prevLink).replace('api', 'views')
-    }
-    if (results.nextLink) {
-        results.nextLink = (results.nextLink).replace('api', 'views')
-    }
-    const products = (results.payload).map(product => {
-        return {
-            id: product._id.toString(),
-            title: product.title,
-            description: product.description,
-            price: product.price,
-            thumbnail: product.thumbnail,
-            code: product.code,
-            stock: product.stock,
-            category: product.category,
-            status: product.status
+    router.get('/products', authenticated, async (req, res) => {
+        let limit = parseInt(req.query.limit);
+        let query = req.query.query || null
+        let sort = parseInt(req.query.sort)
+        let page = parseInt(req.query.page)
+        let user = req.user
+
+        try {
+            let result = await productDao.getProducts(limit, JSON.parse(query), sort, page)
+            res.render('products', { result, user })
+            } catch (error) {
+            res.json({ message: 'Error, check data' })
+            }
+        })
+    
+    router.get('/products/:pid', async (req, res) => {
+        const pid = (req.params.pid)
+        try {
+            let result = await productDao.getProductById(pid)
+            console.log(result)
+            res.render('product-id', { result })
+        } catch (error) {
+            res.json({ error })
         }
+    })
+    
+    router.get('/carts', async (req, res) => {
+        try {
+            let cart = await cartDao.getCarts();
+            res.render('cart', { cart })
+        } catch (error) {
+            res.json({ error })
+        }
+    })
+    
+    router.get('/carts/:cid', async (req, res) => {
+        const cid = (req.params.cid)
+        try {
+            let result = await cartDao.getCartById(cid)
+            console.log(result.products)
+            res.render('cart', { result })
+        } catch (error) {
+            res.json({ error })
+        }
+    })
+    
+    
+    router.get('/register', (req, res) => {
+        const email = req.session.user;
+        if (email) {
+            return res.redirect('/perfil');
+        }
+        res.render('register', {
+            style: 'style',
+        });
     });
-    response.render('products', { products, results })
-});
-
-router.get('/carts/:cartId', async (request, response) => {
-
-
-});
-
-router.get('/register', (req, res) => {
-    const email = req.session.user;
-    if (email) {
-        return res.redirect('/perfil');
-    }
-    res.render('register', {
-        style: 'style',
+    
+    router.get('/users/:id', async (req, res, next) => {
+    
+        try {
+            const id = req.params.id;
+    
+            const user = await userModel.findOne({ _id: id });
+            if (!user) {
+            res
+                .status(404)
+                .send({ error: `Usuario con id ${idUsuario} no encontrado` });
+            return;
+            }
+            res.render("viewUsuario", user);
+        } catch (error) {
+            next(error);
+        }
+    
     });
-});
-
-router.get("/login", (req, res) => {
-    const email = req.session.user;
-    if (email) {
-        return res.redirect('/perfil');
-    }
-    res.render('login');
-});
-
-router.get('/perfil', authenticated, async (req, res) => {
-    const user = req.session.user = req.user;
-
-
-    res.render('perfil', {
-        nombre: user.nombre,
-        apellido: user.apellido,
-        edad: user.edad,
-        email: user.email,
+    
+    router.get('/mensaje', (req, res) => {
+        res.render('mensaje');
     });
-});
-
-route.get('/forgot-password', async (req, res) => {
-    res.render('forgot-password');
-});
-
-
+    
+    router.get('/login', (req, res) => {
+        const email = req.session.user;
+        if (email) {
+            return res.redirect('/perfil');
+        }
+        res.render('login');
+    });
+    
+    router.get('/perfil', authenticated, async (req, res) => {
+        const user = req.session.user = req.user
+        res.render('perfil', {
+            nombre: user.nombre,
+            apellido: user.apellido,
+            edad: user.edad,
+            email: user.email,
+        });
+    });
+    
 export default router;

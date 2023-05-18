@@ -1,13 +1,11 @@
 import { Router } from 'express';
-import { userModel } from '../models/user.model.js';
-import {findOne, findAll, create, update, remove}from '../controllers/user.controller.js';
-
+import { userModel } from '../dao/models/user.model.js';
 
 const route = Router();
 
-
-route.get('/', findAll)/*async (req, res, next) => {
+route.get('/', async (req, res, next) => {
     const { skip, limit, ...query } = req.query;
+
     try {
     const usuarios = await userModel.paginate(query, {
         skip: Number(skip ?? 0),
@@ -20,13 +18,15 @@ route.get('/', findAll)/*async (req, res, next) => {
         hasNextPage: usuarios.hasNextPage,
         hasPrevPage: usuarios.hasPrevPage,
     });
-    } catch (error) {
+} catch (error) {
     next(error);
-    }
-});*/
-route.get('/:idUsuario', findOne)/*async (req, res, next) => {
+}
+});
+
+route.get('/:idUsuario', async (req, res, next) => {
     try {
     const idUsuario = req.params.idUsuario;
+
     const usuario = await userModel.findOne({ _id: idUsuario });
     if (!usuario) {
         res
@@ -35,29 +35,32 @@ route.get('/:idUsuario', findOne)/*async (req, res, next) => {
         return;
     }
     res.send({ usuario });
-    } catch (error) {
+} catch (error) {
     next(error);
-    }
-});*/
+}
+});
 
-route.post('/', create)/*async (req, res, next) => {
+route.post('/', async (req, res, next) => {
     const email = req.session.user;
     if (email) {
-    return res.redirect('/perfil');
+        return res.redirect('/perfil');
     }
-    const usuario = req.body;
+const usuario = req.body;
 
     try {
-    const { _id } = await userModel.create(usuario);
+        const { _id } = await userModel.create(usuario);
+
     res.status(201).send({ id: _id });
     } catch (error) {
     next(error);
-    }
-});*/
-route.put('/:idUsuario', update)/*async (req, res, next) => {
+}
+});
+
+route.put('/:idUsuario', async (req, res, next) => {
     const idUsuario = req.params.idUsuario;
-    try {
-    const usuario = await userModel.findById({ _id: idUsuario });
+
+try {
+    const usuario = await userModel.find({ _id: idUsuario });
     if (!usuario) {
         res
         .status(404)
@@ -74,17 +77,16 @@ route.put('/:idUsuario', update)/*async (req, res, next) => {
     } catch (error) {
     next(error);
     }
-});*/
+});
 
-route.delete('/:idUsuario', remove)/*async (req, res, next) => {
+route.delete('/:idUsuario', async (req, res, next) => {
     try {
         const idUsuario = req.params.idUsuario;
         await userModel.deleteOne({ _id: idUsuario });
         res.send({ ok: true });
     } catch (error) {
-        next(error);
+    next(error);
     }
-    });*/
-    export default route;
+});
 
-    //54:06
+export default route;
