@@ -17,6 +17,9 @@ import { allowInsecurePrototypeAccess } from '@handlebars/allow-prototype-access
 import routes from './src/routes/index.js';
 import { configurePassport } from './src/config/passport.config.js';
 import passport from 'passport';
+import nodemailer from 'nodemailer';
+
+
 
 const app = express()
 
@@ -65,15 +68,16 @@ app.use('/api/carts', cartRoutes)
 app.use('/api', routes);
 
 
-
 // BASE DE DATOS
+try{
 mongoose.set('strictQuery', false)
-mongoose.connect('mongodb+srv://JereMarcelo:Jeremias98@cluster0.fbfpvfe.mongodb.net/?retryWrites=true&w=majority', (error) => {
-    if (error) {
-        console.log('Cannot connect to database' + error)
+mongoose.connect('mongodb+srv://JereMarcelo:Jeremias98@cluster0.fbfpvfe.mongodb.net/?retryWrites=true&w=majority')
+console.log("connected")
+} catch (error) {
+    console.log(error)
     process.exit()
-    }
-})
+} 
+    
 
 //SOCKET IO
 io.on('connection', async (socket) => {
@@ -87,3 +91,7 @@ io.on('connection', async (socket) => {
         io.emit("historialChat", await chatDao.getMessages())
     })
 })
+
+/*app.get('/mail', async(req, res) => {
+
+})*/

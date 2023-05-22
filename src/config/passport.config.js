@@ -3,7 +3,7 @@ import local from 'passport-local';
 import { userModel } from '../dao/models/user.model.js';
 import { createHash, isValidPassword } from '../utils/crypto.js';
 import github from 'passport-github2';
-//import { config } from "../../config.js";
+import { config } from "../config.js";
 
 const LocalStrategy = local.Strategy;
 const GithubStrategy = github.Strategy;
@@ -63,7 +63,7 @@ export function configurePassport() {
     passport.use('github',
         new GithubStrategy(
             {
-                clientID: config.github_client_id,
+                clientID:  config.github_client_id,
                 clientSecret: config.github_client_secret,
                 callbackURL: config.github_callback_url,
             },
