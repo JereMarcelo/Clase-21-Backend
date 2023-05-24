@@ -17,9 +17,8 @@ import { allowInsecurePrototypeAccess } from '@handlebars/allow-prototype-access
 import routes from './src/routes/index.js';
 import { configurePassport } from './src/config/passport.config.js';
 import passport from 'passport';
-import nodemailer from 'nodemailer';
-
-
+import * as dotenv from "dotenv"
+dotenv.config({ path: "./.env" })
 
 const app = express()
 
@@ -32,22 +31,22 @@ app.use(
         store: MongoStore.create({
             mongoUrl: 'mongodb+srv://JereMarcelo:Jeremias98@cluster0.fbfpvfe.mongodb.net/?retryWrites=true&w=majority',
             mongoOptions: {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        },
-        ttl: 15,
-    }),
-    secret: "123456",
-    resave: true,
-    saveUninitialized: true,
-})
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            },
+            ttl: 25,
+        }),
+        secret: process.env.secret,
+        resave: true,
+        saveUninitialized: true,
+    })
 );
 configurePassport()
 app.use(passport.initialize())
 app.use(passport.session())
 
 // WEBSOCKET
-const httpServer = app.listen(8080, () => console.log("Listening on port 8080"))
+const httpServer = app.listen(8080, () => console.log("Run in the port 8080"))
 const io = new Server(httpServer)
 
 // HANDELBARS
@@ -68,30 +67,26 @@ app.use('/api/carts', cartRoutes)
 app.use('/api', routes);
 
 
+
 // BASE DE DATOS
 try{
-mongoose.set('strictQuery', false)
-mongoose.connect('mongodb+srv://JereMarcelo:Jeremias98@cluster0.fbfpvfe.mongodb.net/?retryWrites=true&w=majority')
+    mongoose.set('strictQuery', false)
+    mongoose.connect('mongodb+srv://JereMarcelo:Jeremias98@cluster0.fbfpvfe.mongodb.net/?retryWrites=true&w=majority')
 console.log("connected")
 } catch (error) {
     console.log(error)
     process.exit()
-} 
-    
+}
 
-//SOCKET IO
+// SOCKET IO
 io.on('connection', async (socket) => {
     socket.emit("historialChat", await chatDao.getMessages())
     socket.on("mensajeNuevo", async (data) => {
-    let message = {
-        user: data.user,
-        message: data.message
+        let message = {
+            user: data.user,
+            message: data.message
         }
     await chatDao.registerMessage(message)
         io.emit("historialChat", await chatDao.getMessages())
     })
 })
-
-/*app.get('/mail', async(req, res) => {
-
-})*/
