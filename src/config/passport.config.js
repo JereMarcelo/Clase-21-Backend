@@ -3,10 +3,11 @@ import local from 'passport-local';
 import { userModel } from '../dao/models/user.model.js';
 import { createHash, isValidPassword } from '../utils/crypto.js';
 import github from 'passport-github2';
-
+import jwt from 'passport-jwt';
 
 const LocalStrategy = local.Strategy;
 const GithubStrategy = github.Strategy;
+const JWTStrategy = jwt.Strategy;
 
 export function configurePassport() {
     passport.use(
@@ -91,7 +92,26 @@ export function configurePassport() {
             }
         )
     );
+    passport.use(
+        'jwt',
+        new JWTStrategy({
+            jwtFromRequest: jwt.ExtractJwt.fromExtractors([cookieExtractor]),
+            secretOrKey: "12345"
+        }, (payload, done) => {
+            try {
+            console.log(payload)
+            done(null, payload)
+            } catch (error) {
+                done(error, false)
+            }
 
+        })
+    );
+
+
+    function cookieExtractor(req) {
+        return req?.cookies?.["AUTH"];
+    }
 
     passport.serializeUser((user, done) => done(null, user._id))
     passport.deserializeUser(async (id, done) => {
