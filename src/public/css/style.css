@@ -5,7 +5,7 @@ html {
     color: white;
 }
 
-.hero-image {
+body {
     background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
         url('../img/programmer.jpg');
 

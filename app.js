@@ -36,7 +36,7 @@ app.use(
             },
             ttl: 25,
         }),
-        secret: process.env.secret,
+        secret: 'secret',
         resave: true,
         saveUninitialized: true,
     })
