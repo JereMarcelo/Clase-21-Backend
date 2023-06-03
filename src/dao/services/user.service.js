@@ -24,6 +24,9 @@ class UserService {
     async delete(id) {
         return this.#model.findByIdAndDelete(id)
     }
+    async findByCartId(cartId) {
+        return this.#model.findOne({ cartId }).populate('cartId');
+    }
 }
 
 export default UserService

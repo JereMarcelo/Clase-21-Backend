@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import productDao from '../dao/productDao.js';
 import { authenticated } from '../utils/auth.js';
+import viewController from '../controllers/view.controller.js';
 const router = Router();
 
 
@@ -51,9 +52,11 @@ router.get('/', async (req, res) => {
             let cart = await cartDao.getCarts();
             res.render('cart', { cart })
         } catch (error) {
-            res.json({ error })
+                res.json({ error })
         }
     })
+
+    router.get('/carts', viewController.cartsId );
     
     router.get('/carts/:cid', async (req, res) => {
         const cid = (req.params.cid)
@@ -117,5 +120,7 @@ router.get('/', async (req, res) => {
             email: user.email,
         });
     });
+    
+    router.get('/purchase', viewController.purchase);
     
 export default router;

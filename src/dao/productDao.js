@@ -25,6 +25,15 @@ class productDao {
     async deleteProduct(id) {
         return await productModel.findByIdAndDelete(id)
     }
+
+    async updateProductStock(id, quantity) {
+        return productModel.findOneAndUpdate(
+        { _id: id },
+        { $inc: { stock: -quantity } },
+        { new: true }
+    );
+  }
 }
+
 
 export default new productDao();

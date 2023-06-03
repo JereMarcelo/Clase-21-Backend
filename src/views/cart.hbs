@@ -1,10 +1,20 @@
-{{#each cart}}
-<div class="">
+<div class="container d-flex flex-column align-items-center">
+    <div class="card m-5 w-75">
+        <h1 class="m-5 text-center">{{result._id}}</h1>
+        <h2 class="m-5 text-center">{{result.products}}</h2>
+        <p>PRODUCTOS: {{product.title}}</p>
+        <p>CATEGORIA: {{product.category}}</p>
 
-    <div class="">
-        <h5>{{_id}}</h5>
-        <h5>{{ products}}</h5>
+        <p>STOCK: {{product.stock}}</p>
+        <p>CANTIDAD: {{quantity}}</p>
+        <button type="submit" class="btn btn-dark" onclick="purchase('{{result._id}}')">Finalizar compra</button>
 
     </div>
 </div>
+
+{{#each result.products}}
+    <p>{{products.title}}</p>
 {{/each}}
+
+
+<script src="js/cart.js"></script>

@@ -1,6 +1,7 @@
 import productDao from '../dao/productDao.js'
 import cartDao from '../dao/cartDao.js'
 import UserService from "../dao/services/user.service.js"
+import { purchase } from './cart.controller.js';
 
 class ViewController {
     #service;
@@ -104,7 +105,11 @@ class ViewController {
             res.json({ error })
         }
     }
-}
+        async purchase (req,res) {
+            res.render('purchase')
+        }
+    }
+
 
 const controller = new ViewController( new UserService());
 export default controller

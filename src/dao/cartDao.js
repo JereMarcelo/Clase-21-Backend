@@ -1,4 +1,6 @@
 import { cartModel } from '../dao/models/cart.models.js'
+import { host, port, user, pass } from "../controllers/mail.controller.js"
+import nodemailer from "nodemailer";
 
 class cartDao {
 
@@ -18,42 +20,38 @@ class cartDao {
         return await cartModel.create(cart)
     }
 
-    async updateCart(cid, product) {
-    const myProduct = {
-        product: product._id,
-        quantity: 1,
-    }
+    async findOneAndUpdate(query, update) {
+        return cartModel.updateOne(query, update);
+      }
 
-    try {
-        const cart = await cartModel.findById(cid)
-        const productIndex = cart.products.findIndex(product => product.product.toString() === myProduct.product)
-        if (productIndex === -1) {
-            cart.products.push(myProduct);
-        const savedCart = await cart.save()
-        return savedCart
-        } else {
-        cart.products[productIndex].quantity++;
-        const savedCart = await cart.save()
-        return savedCart
+      async PurchaseMail(email) {
+
+        const transporter = nodemailer.createTransport({
+          host: host,
+          port: port,
+          auth: {
+            user: user,
+            pass: pass
+          }
+        })
+    
+
+        transporter.sendMail({
+            from: "'CoderBack' <ecommerce@coderhouse.com>",
+            to: email,
+            subject: 'Aviso de compra',
+            html: `
+              <h1>Se recibio compra</h1>
+             
+            `
+        })
+            .then(info => console.log(info))
+            .catch(error => console.log(error))
+
         }
-    } catch (error) {
-        throw new Error(error)
-    }
-}
-
-    async updateQuantityToCart(cid, pid, quantity)  {
-		try {
-			await cartModel.updateOne({ id: cid, 'products.product': pid }, { $inc: { 'products.$.quantity': quantity } })
-		} catch (error) {
-			throw new Error(error)
-		}
-	}
-
-    async deleteProductFromCart(cid, pid) {
-        return await cartModel.findByIdAndUpdate({ _id: cid },
-        { $pull: { products: { product: pid } } },
-        { new: true, useFindAndModify: false })
-    }
+        async updateCart(cart) {
+            return cart.save();
+        }
 
     async emptyCart(cid) {
         return await cartModel.findByIdAndDelete({ _id: cid },

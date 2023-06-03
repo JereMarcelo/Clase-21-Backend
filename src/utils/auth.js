@@ -1,14 +1,25 @@
-  import { userModel } from '../dao/models/user.model.js';
+import passport from 'passport';
+import jwt from "jsonwebtoken";
 
-  
-  export const authenticated = async (req, res, next) => {
-    const email = req.session.user;
-    if (email) {
-      const user = await userModel.findOne({ email });
-      req.user = user;
+export function authenticated(){
+  return passport.authenticate("jwt", {
+    session:false
+  })
+}
+
+export function authorized(role) {
+  return (req, res, next) => {
+    console.log(req.user);
+    if (!role || role.length === 0 || role.includes(req.user.role)) {
       next();
     } else {
-      
-      res.redirect('/login');
+      res.status(403).send({
+        message: `you do not have any of the required roles (${role})`,
+      });
     }
   };
+}
+
+export function generateToken(user) {
+  return jwt.sign( user , "12345", { expiresIn: '24h' });
+  }
