@@ -19,9 +19,18 @@ import { configurePassport } from './src/config/passport.config.js';
 import passport from 'passport';
 import * as dotenv from "dotenv"
 dotenv.config({ path: "./.env" })
+//import { addLogger } from './src/utils/logger.js';
+import { loggerMiddleware } from './src/logger/winston-logger.js';
 
 const app = express()
 
+app.use(loggerMiddleware);
+//app.use(addLogger);
+
+app.get('/', (req, res) => {
+    res.logger.error('Alerta')
+    res.send({message: "Prueba de logger"})
+})
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
