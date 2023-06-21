@@ -1,5 +1,5 @@
-import { cartModel } from '../dao/models/cart.models.js'
-import { host, port, user, pass } from "../controllers/mail.controller.js"
+import { cartModel } from '../dao/models/cart.models.js';
+import { host, port, user, pass } from "../controllers/mail.controller.js";
 import nodemailer from "nodemailer";
 
 class cartDao {

@@ -10,7 +10,6 @@ class MockingController {
     const products = Array.from({ length: 50 }, () => this.#mockingService.generateProduct())
     if (!products) 
         res.send({error: "No hay productos"})
-
     else{
         res.send({ status: 'ok', payload: products })
     } 

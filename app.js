@@ -55,7 +55,7 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 // WEBSOCKET
-const httpServer = app.listen(8080, () => console.log("Run in the port 8080"))
+const httpServer = app.listen(8080, () => console.log("Corriendo en el puerto 8080"))
 const io = new Server(httpServer)
 
 // HANDELBARS

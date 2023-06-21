@@ -124,7 +124,7 @@ export const purchase = async (req, res) => {
             const idString = item.product._id.toString()
             const product = await productDao.getProductById({ _id: idString })
             if (!product) {
-                console.log("error4");
+                console.log("error");
 
                 return
             }
@@ -146,7 +146,7 @@ export const purchase = async (req, res) => {
         }
         const newTicket = await ticketService.create(ticketData)
         if (!newTicket) {
-            console.log("error5");
+            console.log("error");
 
             return
         }
@@ -155,7 +155,7 @@ export const purchase = async (req, res) => {
         const updateCart = await cartDao.updateCart(cart);
 
         if (!updateCart) {
-            console.log("error6");
+            console.log("error");
         }
 
         const mailSent = await cartDao.PurchaseMail(purchaser)

@@ -16,7 +16,7 @@ export const sendSms = async (req, res) => {
     const client = twilio(sid, auth)
     client.messages.create({
         from: phone,
-        to: "+54297654321",
+        to: "+5429712345",
         body: "ESTE ES UN MENSAJE DE PRUEBA DE TWILIO"
     })
         .then(result => console.log("message sent", result))

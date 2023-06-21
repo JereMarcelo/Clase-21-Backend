@@ -1,5 +1,7 @@
 import { Router } from 'express'
 import { deleteProductFromCart, getAllCarts, getCartById, postCart, updateCart, addProduct, deleteCart, purchase } from '../controllers/cart.controller.js'
+import { passportError } from '../config/middlewares/passportError.js';
+import { roleValidation } from '../config/middlewares/roleValidation.js';
 
 const router = Router()
 

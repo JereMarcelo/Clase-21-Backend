@@ -47,7 +47,7 @@ class UserController {
             if (!usuario) {
                 res
                     .status(404)
-                    .send({ error: `Usuario con id ${idUsuario} no encontrado` });
+                    .send({ error: `Usuario con el id ${idUsuario} no encontrado` });
                 return;
             }
             res.send({ usuario });
@@ -62,7 +62,7 @@ class UserController {
             if (!usuario) {
                 res
                     .status(404)
-                    .send({ error: `Usuario con id ${idUsuario} no encontrado` });
+                    .send({ error: `Usuario con el id ${idUsuario} no encontrado` });
                 return;
             }
             const nuevosDatos = req.body;

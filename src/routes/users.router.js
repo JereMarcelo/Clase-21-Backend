@@ -1,7 +1,15 @@
 import { Router } from 'express';
 import { userModel } from '../dao/models/user.model.js';
+import { passportError } from '../config/middlewares/passportError.js';
+import { roleValidation } from '../config/middlewares/roleValidation.js';
+
 
 const route = Router();
+
+route.get('/', passportError('jwt'), roleValidation(['admin']),);
+route.put('/premium/:uid', passportError('jwt'), );
+
+
 
 route.get('/', async (req, res, next) => {
     const { skip, limit, ...query } = req.query;
