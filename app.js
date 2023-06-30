@@ -21,8 +21,13 @@ import * as dotenv from "dotenv"
 dotenv.config({ path: "./.env" })
 //import { addLogger } from './src/utils/logger.js';
 import { loggerMiddleware } from './src/logger/winston-logger.js';
+import spec from './src/docs/swagger-options.js';
+import swaggerUiExpress from 'swagger-ui-express';
+
 
 const app = express()
+
+app.use('/apidocs', swaggerUiExpress.serve, swaggerUiExpress.setup(spec));
 
 app.use(loggerMiddleware);
 //app.use(addLogger);
