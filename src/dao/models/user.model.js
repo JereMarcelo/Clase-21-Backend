@@ -1,6 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
-
 export const userCollection = 'usuarios';
 
 const userSchema = new mongoose.Schema({

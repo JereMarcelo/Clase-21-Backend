@@ -5,8 +5,7 @@ import passport from "passport"
 import { generateToken } from '../utils/auth.js';
 
 const route = Router();
-route.post(
-  '/login',
+route.post('/login',
   passport.authenticate('login', {
     failureRedirect: '/api/auth/login-failure',
   }),
