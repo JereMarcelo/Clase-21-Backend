@@ -68,7 +68,7 @@ export const addProduct = async (req, res, next) => {
         await cart.save()
 
     } catch (error) {
-        res.json({ error: "Error hermano" })
+        res.json({ error: "Tenemos un error" })
     }
 }
 

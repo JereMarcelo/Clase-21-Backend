@@ -9,7 +9,7 @@ export const passportError = (strategy) => {
 
             if (!user) {
                 return res.status(401).send({ 
-                    message: "No hay usuario logeado" 
+                    message: "No hay ningun usuario logeado" 
                 });
             }
             req.user = user;

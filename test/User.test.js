@@ -22,7 +22,7 @@ describe('Users dao', function() {
     });
     
     it('Hago otra prueba que falle', function () {
-    //assert.ok([]);
+    
     assert.equal(true, false );
     });
 })

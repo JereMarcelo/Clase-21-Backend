@@ -2,7 +2,7 @@ export const roleValidation = (roles) => {
     return async (req, res, next) => {
         if (!req.user) {
             return res.status(401).send({
-                message: "Usuario no autorizado"
+                message: "Este Usuario no esta autorizado"
             })
         }
 
