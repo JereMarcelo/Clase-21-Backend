@@ -1,18 +1,23 @@
 import passport from 'passport';
-import local from 'passport-local';
 import { userModel } from '../dao/models/user.model.js';
 import { createHash, isValidPassword } from '../utils/crypto.js';
-import github from 'passport-github2';
-import jwt from 'passport-jwt';
+import { jwtStrategy } from './strategies/jwt.strategy.js';
+import { localStrategy } from './strategies/local.strategy.js';
+import { gitHubStrategy } from './strategies/gitHub.strategy.js';
 
-const LocalStrategy = local.Strategy;
+
+/*const LocalStrategy = local.Strategy;
 const GithubStrategy = github.Strategy;
-const JWTStrategy = jwt.Strategy;
+const JWTStrategy = jwt.Strategy;*/
 
 export function configurePassport() {
+    localStrategy();
+    jwtStrategy();
+    gitHubStrategy();
+    
     passport.use(
         'register',
-        new LocalStrategy(
+        new localStrategy(
             {
                 passReqToCallback: true,
                 usernameField: 'email'
@@ -38,7 +43,7 @@ export function configurePassport() {
             }
         )
     );
-    passport.use('login', new LocalStrategy(
+    passport.use('login', new localStrategy(
         {
             usernameField: 'email'
         },
@@ -61,8 +66,8 @@ export function configurePassport() {
         }))
 
 
-    passport.use('github',
-        new GithubStrategy(
+    /*passport.use('github',
+        new githubStrategy(
             {
                 clientID:  process.env.github_client_id,
                 clientSecret: process.env.github_secret,
@@ -79,7 +84,7 @@ export function configurePassport() {
                             nombre: profile._json.name,
                             apellido: '-',
                             password: '-',
-                            edad: 24,
+                            edad: 45,
                         });
                         return done(null, newUser);
                     }
@@ -94,9 +99,9 @@ export function configurePassport() {
     );
     passport.use(
         'jwt',
-        new JWTStrategy({
+        new jwtStrategy({
             jwtFromRequest: jwt.ExtractJwt.fromExtractors([cookieExtractor]),
-            secretOrKey: "12345"
+            secretOrKey: "753159"
         }, (payload, done) => {
             try {
             console.log(payload)
@@ -107,15 +112,5 @@ export function configurePassport() {
 
         })
     );
-
-
-    function cookieExtractor(req) {
-        return req?.cookies?.["AUTH"];
-    }
-
-    passport.serializeUser((user, done) => done(null, user._id))
-    passport.deserializeUser(async (id, done) => {
-        const user = await userModel.findOne({ _id: id });
-        done(null, user);
-    });
+    */
 }

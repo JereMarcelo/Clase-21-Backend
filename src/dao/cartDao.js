@@ -22,28 +22,23 @@ class cartDao {
 
     async findOneAndUpdate(query, update) {
         return cartModel.updateOne(query, update);
-      }
+    }
 
-      async PurchaseMail(email) {
-
+    async PurchaseMail(email) {
         const transporter = nodemailer.createTransport({
-          host: host,
-          port: port,
-          auth: {
+            host: host,
+            port: port,
+            auth: {
             user: user,
             pass: pass
-          }
+        }
         })
     
-
         transporter.sendMail({
             from: "'CoderBack' <ecommerce@coderhouse.com>",
             to: email,
             subject: 'Aviso de compra',
-            html: `
-              <h1>Se recibio compra</h1>
-             
-            `
+            html: `<h1> SE RECIBIO SU COMPRA </h1> `
         })
             .then(info => console.log(info))
             .catch(error => console.log(error))

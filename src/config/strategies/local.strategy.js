@@ -6,7 +6,7 @@ import { Strategy as LocalStrategy } from "passport-local";
 export function localStrategy() {
     passport.use(
         'register',
-        new localStrategy(
+        new LocalStrategy(
             {
                 passReqToCallback: true,
                 usernameField: 'email',
